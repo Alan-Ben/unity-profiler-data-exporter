@@ -258,7 +258,19 @@ namespace ProfilerDataExporter
         {
             var firstFrameIndex = ProfilerDriver.firstFrameIndex;
             var lastFrameIndex = ProfilerDriver.lastFrameIndex;
-            ExtractData(firstFrameIndex, lastFrameIndex, ProfilerDriver.selectedPropertyPath);
+            string selectedPropertyPath ;
+#if UNITY_IPHONE
+        selectedPropertyPath = ProfilerDriver.selectedPropertyPath;
+#elif UNITY_ANDROID
+        selectedPropertyPath = ProfilerDriver.selectedPropertyPath;
+#elif UNITY_WEBPLAYER
+        selectedPropertyPath = ProfilerDriver.selectedPropertyPath;
+#elif UNITY_STANDALONE_WIN
+            selectedPropertyPath = "Main Thread/"+ ProfilerDriver.selectedPropertyPath;
+#else
+       selectedPropertyPath = ProfilerDriver.selectedPropertyPath;
+#endif
+            ExtractData(firstFrameIndex, lastFrameIndex, selectedPropertyPath);
         }
 
         private void ExtractData(int firstFrameIndex, int lastFrameIndex, string selectedPropertyPath = "")
