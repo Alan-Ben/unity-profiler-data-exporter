@@ -118,6 +118,7 @@ namespace ProfilerDataExporter
             EditorGUILayout.EndScrollView();
         }
 
+        private bool _m_isUseAllData = true;
         private int _m_startFrameIndex = 0;
         private int _m_endFrameIndex = 0;
 
@@ -134,27 +135,37 @@ namespace ProfilerDataExporter
             sortType = (SortType)EditorGUILayout.EnumPopup(sortType, GUILayout.ExpandWidth(false));
             bool sortTypeChanged = oldSortType != sortType;
 
-            float tempStartFrameIndex = _m_startFrameIndex;
-            float tempEndFrameIndex = _m_endFrameIndex;
-            EditorGUILayout.MinMaxSlider(ref tempStartFrameIndex,ref tempEndFrameIndex,ProfilerDriver.firstFrameIndex,ProfilerDriver.lastFrameIndex);
-            int tempIntStartFrameIndex = (int)tempStartFrameIndex;
-            int tempIntEndFrameIndex = (int)tempEndFrameIndex;
-
-            if (tempIntStartFrameIndex != _m_startFrameIndex)
+            _m_isUseAllData = EditorGUILayout.Toggle(_m_isUseAllData);
+            if (!_m_isUseAllData)
             {
-                _m_startFrameIndex = tempIntStartFrameIndex;
-                currentFrameFieldInfo.SetValue(profilerWindow,_m_startFrameIndex);
-                profilerWindow.Repaint();
+                float tempStartFrameIndex = _m_startFrameIndex;
+                float tempEndFrameIndex = _m_endFrameIndex;
+                EditorGUILayout.MinMaxSlider(ref tempStartFrameIndex,ref tempEndFrameIndex,ProfilerDriver.firstFrameIndex,ProfilerDriver.lastFrameIndex);
+                int tempIntStartFrameIndex = (int)tempStartFrameIndex;
+                int tempIntEndFrameIndex = (int)tempEndFrameIndex;
+
+                if (tempIntStartFrameIndex != _m_startFrameIndex)
+                {
+                    _m_startFrameIndex = tempIntStartFrameIndex;
+                    currentFrameFieldInfo.SetValue(profilerWindow,_m_startFrameIndex);
+                    profilerWindow.Repaint();
+                }
+                if (tempIntEndFrameIndex != _m_endFrameIndex)
+                {
+                    _m_endFrameIndex = tempIntEndFrameIndex;
+                    currentFrameFieldInfo.SetValue(profilerWindow,_m_endFrameIndex);
+                    profilerWindow.Repaint();
+                }
+
+                _m_startFrameIndex = EditorGUILayout.IntField(_m_startFrameIndex,GUILayout.Width(30));
+                _m_endFrameIndex = EditorGUILayout.IntField(_m_endFrameIndex,GUILayout.Width(30));
             }
-            if (tempIntEndFrameIndex != _m_endFrameIndex)
+            else
             {
-                _m_endFrameIndex = tempIntEndFrameIndex;
-                currentFrameFieldInfo.SetValue(profilerWindow,_m_endFrameIndex);
-                profilerWindow.Repaint();
+                _m_startFrameIndex = ProfilerDriver.firstFrameIndex;
+                _m_endFrameIndex = ProfilerDriver.lastFrameIndex;
             }
 
-            _m_startFrameIndex = EditorGUILayout.IntField(_m_startFrameIndex,GUILayout.Width(30));
-            _m_endFrameIndex = EditorGUILayout.IntField(_m_endFrameIndex,GUILayout.Width(30));
             
             GUILayout.EndHorizontal();
 
