@@ -5,6 +5,7 @@ using UnityEditorInternal;
 using UnityEditorInternal.Profiling;
 #endif
 using ByteSizeLib;
+using UnityEngine;
 
 namespace ProfilerDataExporter
 {
@@ -40,13 +41,23 @@ namespace ProfilerDataExporter
             }
         }
 
-        public IList<FunctionData> CalculateStats(ProfilerColumn[] columnsToShow, ProfilerColumn sortColumn)
+        public IList<FunctionData> CalculateStats(ProfilerColumn[] columnsToShow, ProfilerColumn sortColumn, int _startFrameIndex, int _endFrameIndex)
         {
             //using (Profiler.AddSample(Profiler.SamplerType.CalculateStats))
             {
                 var firstFrameIndex = ProfilerDriver.firstFrameIndex;
+                if (_startFrameIndex < firstFrameIndex)
+                {
+                    Debug.LogError($"_startFrameIndex:{_startFrameIndex}<firstFrameIndex:{firstFrameIndex}");
+                    _startFrameIndex = firstFrameIndex;
+                }
                 var lastFrameIndex = ProfilerDriver.lastFrameIndex;
-                var profilerData = ProfilerData.GetProfilerData(firstFrameIndex, lastFrameIndex);
+                if (_endFrameIndex > lastFrameIndex)
+                {
+                    Debug.LogError($"_endFrameIndex:{_endFrameIndex}<lastFrameIndex:{lastFrameIndex}");
+                    _endFrameIndex = lastFrameIndex;
+                }
+                var profilerData = ProfilerData.GetProfilerData(_startFrameIndex, _endFrameIndex);
 
                 var frames = profilerData.frames;
                 for (int i = 0; i < frames.Count; ++i)

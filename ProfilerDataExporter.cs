@@ -118,6 +118,9 @@ namespace ProfilerDataExporter
             EditorGUILayout.EndScrollView();
         }
 
+        private int _m_startFrameIndex = 0;
+        private int _m_endFrameIndex = 0;
+
         private void DrawStats()
         {
             GUILayout.BeginHorizontal();
@@ -131,6 +134,28 @@ namespace ProfilerDataExporter
             sortType = (SortType)EditorGUILayout.EnumPopup(sortType, GUILayout.ExpandWidth(false));
             bool sortTypeChanged = oldSortType != sortType;
 
+            float tempStartFrameIndex = _m_startFrameIndex;
+            float tempEndFrameIndex = _m_endFrameIndex;
+            EditorGUILayout.MinMaxSlider(ref tempStartFrameIndex,ref tempEndFrameIndex,ProfilerDriver.firstFrameIndex,ProfilerDriver.lastFrameIndex);
+            int tempIntStartFrameIndex = (int)tempStartFrameIndex;
+            int tempIntEndFrameIndex = (int)tempEndFrameIndex;
+
+            if (tempIntStartFrameIndex != _m_startFrameIndex)
+            {
+                _m_startFrameIndex = tempIntStartFrameIndex;
+                currentFrameFieldInfo.SetValue(profilerWindow,_m_startFrameIndex);
+                profilerWindow.Repaint();
+            }
+            if (tempIntEndFrameIndex != _m_endFrameIndex)
+            {
+                _m_endFrameIndex = tempIntEndFrameIndex;
+                currentFrameFieldInfo.SetValue(profilerWindow,_m_endFrameIndex);
+                profilerWindow.Repaint();
+            }
+
+            _m_startFrameIndex = EditorGUILayout.IntField(_m_startFrameIndex,GUILayout.Width(30));
+            _m_endFrameIndex = EditorGUILayout.IntField(_m_endFrameIndex,GUILayout.Width(30));
+            
             GUILayout.EndHorizontal();
 
             if (calulateStatistics || sortTypeChanged)
@@ -139,7 +164,7 @@ namespace ProfilerDataExporter
                 {
                     var statsCalculator = StatsCalculatorProvider.GetStatsCalculator(statsType);
                     var sortColumn = SortTypeToProfilerColum[sortType];
-                    var stats = statsCalculator.CalculateStats(ColumnsToShow, sortColumn);
+                    var stats = statsCalculator.CalculateStats(ColumnsToShow, sortColumn,_m_startFrameIndex,_m_endFrameIndex);
                     UpdateFunctionStats(stats);
                 }
             }
