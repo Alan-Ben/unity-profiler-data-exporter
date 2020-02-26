@@ -126,7 +126,7 @@ namespace ProfilerDataExporter
 
             if (column != ProfilerColumn.GCMemory)
             {
-                functionDataValue.value = AggregateValues(values).ToString("F2");
+                functionDataValue.value = AggregateValues(values).ToString("F3");
             }
             else
             {
