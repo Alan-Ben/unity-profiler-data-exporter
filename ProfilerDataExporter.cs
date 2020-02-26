@@ -40,6 +40,7 @@ namespace ProfilerDataExporter
         GCMemory,
         TotalTime,
         SelfTime,
+        TotalGPUTime,
     }
 
     public class ProfilerDataExporter : EditorWindow
@@ -53,6 +54,7 @@ namespace ProfilerDataExporter
             ProfilerColumn.GCMemory,
             ProfilerColumn.TotalTime,
             ProfilerColumn.SelfTime,
+            ProfilerColumn.TotalGPUTime,
         };
 
         private static readonly Dictionary<ProfilerColumn, string> ColumnHeaders = new Dictionary<ProfilerColumn, string>
@@ -64,6 +66,7 @@ namespace ProfilerDataExporter
             { ProfilerColumn.GCMemory, "GC Alloc"},
             { ProfilerColumn.TotalTime, "Time ms"},
             { ProfilerColumn.SelfTime, "Self ms"},
+            { ProfilerColumn.TotalGPUTime, "GPU Total ms"},
         };
 
         private static readonly Dictionary<SortType, ProfilerColumn> SortTypeToProfilerColum = new Dictionary<SortType, ProfilerColumn>
@@ -75,6 +78,8 @@ namespace ProfilerDataExporter
             { SortType.GCMemory, ProfilerColumn.GCMemory},
             { SortType.TotalTime, ProfilerColumn.TotalTime},
             { SortType.SelfTime, ProfilerColumn.SelfTime},
+            { SortType.TotalGPUTime, ProfilerColumn.TotalGPUTime},
+
         };
 
         private string filePath = @"profiler_data.json";

@@ -31,7 +31,23 @@ namespace ProfilerDataExporter
                     var column = ProfilerColumns[i];
                     if (column != ProfilerColumn.GCMemory)
                     {
-                        getFunctionValues[i] = f => float.Parse(f.GetValue(column).Replace("%", ""));
+                        getFunctionValues[i] = f =>
+                        {
+                            var tt = f.GetValue(column);
+                            var st = tt.Replace("%", "");
+                            float val = 0;
+                            
+                            try
+                            {
+                                val = float.Parse(st);
+                            }
+                            catch (Exception e)
+                            {
+                                Debug.LogError($"{st}\n{e}");
+                                return 0;
+                            }
+                            return val;
+                        };
                     }
                     else
                     {
